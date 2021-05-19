@@ -12,38 +12,18 @@ require('./handlers/06-session').init(app);
 require('./handlers/07-bodyParser').init(app);
 
 const Router = require('koa-router');
+const UsersControllers = require('./controllers/users');
 const router = new Router();
 
-let  clients = [];
+router.get('/users', UsersControllers.find);
 
-// router.get('/', async (ctx, next ) => {
-//   ctx.body = ctx.render('index.pug');
-// });
+router.get('/users/:id', UsersControllers.findById);
 
-router.get('/subscribe', async (ctx, next) => {
-  ctx.body = await new Promise((resolve => {
-    clients.push(resolve);
+router.post('/users', UsersControllers.add);
 
-    ctx.res.on('close', () => {
-      clients = clients.filter((_resolve) => _resolve !== resolve);
-      resolve();
-    });
-  }));
-});
+router.delete('/users/:id', UsersControllers.delete);
 
-router.post('/publish', async (ctx, next) => {
-  const message = ctx.request.body.message;
-
-  if (!message) {
-    ctx.throw(400);
-  }
-
-   clients.forEach(resolve => resolve(message));
-
-   clients = [];
-
-   ctx.body = 'ok';
-});
+router.patch('/users/:id', UsersControllers.update);
 
 app.use(router.routes());
 app.listen(config.get('port'));
