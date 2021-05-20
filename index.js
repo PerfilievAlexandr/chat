@@ -13,17 +13,18 @@ require('./handlers/07-bodyParser').init(app);
 
 const Router = require('koa-router');
 const UsersControllers = require('./controllers/users');
-const router = new Router();
+const { catchLoadByIdErrors } = require('./validators');
 
-router.get('/users', UsersControllers.find);
+const userRouter = new Router({
+  prefix: '/users',
+})
 
-router.get('/users/:id', UsersControllers.findById);
+userRouter
+  .get('/', UsersControllers.find)
+  .get('/:id', UsersControllers.findById)
+  .post('/', catchLoadByIdErrors, UsersControllers.add)
+  .delete('/:id', catchLoadByIdErrors, UsersControllers.delete)
+  .patch('/:id', catchLoadByIdErrors, UsersControllers.update);
 
-router.post('/users', UsersControllers.add);
-
-router.delete('/users/:id', UsersControllers.delete);
-
-router.patch('/users/:id', UsersControllers.update);
-
-app.use(router.routes());
+app.use(userRouter.routes());
 app.listen(config.get('port'));

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const mongoose = require('../libs/mongoose');
 
 class UsersController {
   async find(ctx) {
@@ -6,95 +7,57 @@ class UsersController {
   }
 
   async findById(ctx) {
-    const { id } = ctx.request.params;
-    try {
-      const user = await User.find({ _id: id });
-
-      if (Array.isArray(user) && !user.length) {
-        ctx.body = 'not found';
-        ctx.status = 404;
-        return;
-      }
-
-      ctx.body = user;
-    } catch (err) {
-      if (err.kind === 'ObjectId') {
-        ctx.body = `Если юзера с id: ${id} нет`;
-        ctx.status = 404;
-        return;
-      }
-
-      ctx.body = 'Error 500';
-      ctx.status = 500;
+    if (!mongoose.Types.ObjectId.isValid(ctx.params.id)) {
+      ctx.throw(400, 'Invalid ObjectId')
     }
+
+    const user = await User.findById(ctx.params.id);
+
+    if (Array.isArray(user) && !user.length) {
+      ctx.body = 'not found';
+      ctx.status = 404;
+      return;
+    }
+
+    ctx.body = user;
   }
 
   async add(ctx) {
     const { email, displayName } = ctx.request.body;
 
-    try {
-      if (email && displayName) {
-        ctx.body = await User.create({ email, displayName });
-        return;
-      }
-
-      ctx.body = `введите email и displayName`;
-      ctx.status = 400;
-
-    } catch (err) {
-      const error = Object.keys(err.errors).map(key => ({ field: key, error: err.errors[key].message}));
-      ctx.status = 400;
-      ctx.body = { errors: error }
-    }
+    ctx.body = await User.create({ email, displayName });
   }
 
   async delete(ctx) {
     const { id } = ctx.request.params;
 
-    try {
-      const { deletedCount } = await User.deleteOne({ _id: id });
-
-      if (deletedCount === 0) {
-        ctx.body = `Если юзера с id: ${id} нет`;
-        ctx.status = 404;
-        return;
-      }
-
-      ctx.body = 'ok';
-    } catch (err) {
-      if (err.kind === 'ObjectId') {
-        ctx.body = `Если юзера с id: ${id} нет`;
-        ctx.status = 404;
-        return;
-      }
-
-      const error = Object.keys(err.errors).map(key => ({ field: key, error: err.errors[key].message}));
-      ctx.status = 404;
-      ctx.body = { errors: error }
+    if (!mongoose.Types.ObjectId.isValid(ctx.params.id)) {
+      ctx.throw(400, 'Invalid ObjectId')
     }
+
+    const { deletedCount } = await User.deleteOne({ _id: id });
+
+    if (deletedCount === 0) {
+      ctx.body = `Если юзера с id: ${id} нет`;
+      ctx.status = 404;
+      return;
+    }
+
+    ctx.body = 'ok';
   }
 
   async update(ctx) {
-    const { id } = ctx.request.params;
+    const { id } = ctx.params;
 
-    const updateData = Object.entries(ctx.request.body).reduce((acc, [key, value]) => {
-      return key ? ({ ...acc, [key]: value }) : acc
-    }, {});
-
-    try {
-      ctx.body = await User.findOneAndUpdate( { _id: id }, updateData, { new: true, runValidators: true});
-    } catch (err) {
-      console.log('err', err);
-      if (err.kind === 'ObjectId') {
-        ctx.body = `Если юзера с id: ${id} нет`;
-        ctx.status = 404;
-        return;
-      }
-
-      const error = Object.keys(err.errors).map(key => ({ field: key, error: err.errors[key].message}));
-      ctx.status = 404;
-      ctx.body = { errors: error }
+    if (!mongoose.Types.ObjectId.isValid(ctx.params.id)) {
+      ctx.throw(400, 'Invalid ObjectId')
     }
+
+     ctx.body = await User.findOneAndUpdate(
+       { _id: id },
+       ctx.request.body,
+       { new: true, runValidators: true },
+     );
   }
 }
 
