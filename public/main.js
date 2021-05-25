@@ -1,38 +1,52 @@
-const publish = document.getElementById('publish');
+const loginForm = document.getElementById('login-form');
+const loginBtn = document.getElementById('login-btn');
+const registrationForm = document.getElementById('registration');
+const registrationBtn = document.getElementById('registration-btn');
+const logoutBtn = document.getElementById('logout');
 
-publish.onsubmit = function() {
-  const xhr = new XMLHttpRequest();
+if (registrationForm) {
+  registrationForm.addEventListener('submit', async (evt) => {
+    evt.preventDefault();
 
-  xhr.open("POST", "/publish", true);
-
-  xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-  xhr.send(JSON.stringify({message: this.elements.message.value}));
-
-  this.elements.message.value = '';
-
-  return false;
-};
-
-subscribe();
-
-function subscribe() {
-  const xhr = new XMLHttpRequest();
-
-  xhr.open("GET", "/subscribe?r=" + Math.random(), true);
-
-  xhr.onload = function() {
-    if(xhr.status !== 200) return this.onerror();
-
-    const li = document.createElement('li');
-    li.textContent = this.responseText;
-    messages.appendChild(li);
-
-    subscribe();
-  };
-
-  xhr.onerror = xhr.onabort = function() {
-    setTimeout(subscribe, 500);
-  };
-
-  xhr.send();
+    fetch('/registration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        name: this.name.value,
+        email: this.email.value,
+        password: this.password.value,
+      })
+    });
+  });
 }
+
+if (loginForm) {
+  loginForm.addEventListener('submit', async (evt) => {
+    evt.preventDefault();
+
+    fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        email: this.email.value,
+        password: this.password.value,
+      })
+    })
+      .then((res) => {
+        // window.location.reload(true);
+      })
+  });
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', (evt) => {
+    evt.preventDefault();
+
+    fetch('/logout', { method: 'POST' });
+  })
+}
+
