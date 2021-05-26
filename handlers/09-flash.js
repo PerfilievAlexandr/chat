@@ -12,6 +12,7 @@ exports.init = app => app.use(async function(ctx, next) {
   };
 
   ctx.flash = function(type, html) {
+    console.log('--------FLASH', type, html);
     if (!ctx.session.messages) {
       ctx.session.messages = {};
     }

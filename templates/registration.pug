@@ -1,17 +1,21 @@
-doctype html
-head
-    meta(charset='utf-8')
-p &Rcy;&iecy;&gcy;&icy;&scy;&tcy;&rcy;&acy;&tscy;&icy;&yacy;
-form#registration
-    div
-        label(for='name') Name
-        input#name(type='text' name='name')
-    div
-        label(for='email') Email
-        input#email(type='email' name='email')
-    div
-        label(for='password') Password
-        input#password(type='password' name='password')
-    button#registration-btn &Zcy;&acy;&rcy;&iecy;&gcy;&icy;&scy;&tcy;&rcy;&icy;&rcy;&ocy;&vcy;&acy;&tcy;&softcy;&scy;&yacy;
-ul#messages
-script(src='main.js')
+extends layout
+
+block append assets
+    script(src="/script.js")
+
+block content
+
+    form#loginForm(action="/registration" method="post")
+        h1 Please sign up
+
+        .form-group
+            label(for="name") Name
+            input.form-control(type="email" id="name" name="name" placeholder="-" required autofocus)
+        .form-group
+            label(for="email") Email
+            input.form-control(type="email" id="email" name="email" placeholder="my@mail.com" required autofocus)
+        .form-group
+            label(for="password") Password
+            input.form-control(type="password" id="password" name="password" required)
+
+        button.btn.btn-lg.btn-primary.btn-block(type="submit") Sign up

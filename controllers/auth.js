@@ -11,7 +11,11 @@ class UserController {
   }
 
   renderPrivate(ctx) {
-    ctx.body = ctx.render('index.pug')
+    if (ctx.isAuthenticated()) { // return !!ctx.state.user;
+      ctx.body = ctx.render('welcome.pug');
+    } else {
+      ctx.body = ctx.render('login.pug');
+    }
   }
 
   async getUsers(ctx) {
@@ -20,7 +24,6 @@ class UserController {
 
   async logout(ctx) {
     ctx.logout();
-
     ctx.redirect('/login');
   };
 
@@ -50,26 +53,31 @@ class UserController {
   }
 
   async signIn(ctx, next) {
-    await passport.authenticate('local', (err, user, info) => {
-
-      if (err) {
-        return next(err);
+    await passport.authenticate('local',
+    //   async function(err, user, info) {
+    //   if (err) throw err;
+    //
+    //   if (user) {
+    //     try {
+    //       await ctx.login(user);
+    //
+    //       ctx.set('Content-Type', 'application/json');
+    //       ctx.body = JSON.stringify({ name: user.name, email: user.email, info });
+    //     } catch (err) {
+    //       throw err;
+    //     }
+    //   } else {
+    //     ctx.status = 401;
+    //     ctx.body = info;
+    //   }
+    // })(ctx, next);
+      {
+        successRedirect: '/',
+        failureRedirect: '/login',
+        failureFlash: true,
+        successFlash: true,
       }
-
-      if (!user) {
-        return ctx.redirect('/login');
-      }
-
-      ctx.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-
-        console.log('++++++');
-
-        return ctx.redirect('/');
-      });
-    })(ctx, next);
+    )
   }
 }
 

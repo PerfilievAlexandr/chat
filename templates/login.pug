@@ -1,14 +1,18 @@
-doctype html
-head
-    meta(charset='utf-8')
-p &Vcy;&khcy;&ocy;&dcy;
-form#login-form
-    div
-        label(for='email') Email
-        input#email(type='email' name='email')
-    div
-        label(for='password') Password
-        input#password(type='password' name='password')
-    button#login-btn &Vcy;&ocy;&jcy;&tcy;&icy;
-ul#messages
-script(src='main.js')
+extends layout
+
+block append assets
+    script(src="/script.js")
+
+block content
+
+    form#loginForm(action="/login" method="post")
+        h1 Please sign in
+
+        .form-group
+            label(for="email") Email
+            input.form-control(type="email" id="email" name="email" placeholder="my@mail.com" required autofocus)
+        .form-group
+            label(for="password") Password
+            input.form-control(type="password" id="password" name="password" required)
+
+        button.btn.btn-lg.btn-primary.btn-block(type="submit") Login
