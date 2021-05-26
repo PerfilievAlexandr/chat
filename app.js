@@ -36,12 +36,12 @@ const checkIsNotAuthenticated = (ctx, next) => {
 router
   .get('/', checkIsNotAuthenticated, AuthController.renderPrivate)
   .get('/login', checkIsAuthenticated, AuthController.renderLogin)
-  .post('/logout', AuthController.logout)
   .get('/registration', AuthController.renderRegistration)
   .get('/get-users', AuthController.getUsers)
   .delete('/delete-user/:id', AuthController.delete)
   .post('/registration', AuthController.signUp)
   .post('/login', AuthController.signIn)
+  .post('/logout', AuthController.logout)
 
 app.use(router.routes());
 

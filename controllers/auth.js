@@ -42,7 +42,7 @@ class UserController {
   }
 
   async signUp(ctx) {
-    const {email, name, password} = ctx.request.body;
+    const { email, name, password } = ctx.request.body;
     await SignUpUser.remove();
 
     const newUser = new SignUpUser({ email, name });
@@ -54,30 +54,22 @@ class UserController {
 
   async signIn(ctx, next) {
     await passport.authenticate('local',
-    //   async function(err, user, info) {
-    //   if (err) throw err;
-    //
-    //   if (user) {
-    //     try {
-    //       await ctx.login(user);
-    //
-    //       ctx.set('Content-Type', 'application/json');
-    //       ctx.body = JSON.stringify({ name: user.name, email: user.email, info });
-    //     } catch (err) {
-    //       throw err;
-    //     }
-    //   } else {
-    //     ctx.status = 401;
-    //     ctx.body = info;
-    //   }
-    // })(ctx, next);
-      {
-        successRedirect: '/',
-        failureRedirect: '/login',
-        failureFlash: true,
-        successFlash: true,
+      async function(err, user, info) {
+      if (err) throw err;
+
+      if (user) {
+        try {
+          await ctx.login(user);
+
+          ctx.redirect('/')
+        } catch (err) {
+          throw err;
+        }
+      } else {
+        ctx.status = 401;
+        ctx.body = info;
       }
-    )
+    })(ctx, next);
   }
 }
 
