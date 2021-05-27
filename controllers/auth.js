@@ -49,7 +49,9 @@ class UserController {
 
     await newUser.setPassword(password);
 
-    ctx.body = await newUser.save();
+    await newUser.save();
+
+    ctx.redirect('/login');
   }
 
   async signIn(ctx, next) {
