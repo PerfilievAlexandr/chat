@@ -1,15 +1,17 @@
 const passport = require('passport');
 const localStrategy = require('./stratagies/local');
-const { SignUpUser } = require('../../models/User');
+const githubStrategy = require('./stratagies/github');
+const { User } = require('../../models/User');
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  SignUpUser.findById(id, done);
+passport.deserializeUser((id, done) => {
+  User.findById(id, done);
 });
 
-passport.use('local', localStrategy);
+passport.use(localStrategy);
+passport.use(githubStrategy);
 
 module.exports = passport;

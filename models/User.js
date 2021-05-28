@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const config = require('config');
 
 
-const userSignUpSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: 'E-mail пользователя не должен быть пустым.',
@@ -19,16 +19,25 @@ const userSignUpSchema = new mongoose.Schema({
   },
   passwordHash: {
     type: String,
-    required: 'У пользователя должен быть пароль',
+    // required: 'У пользователя должен быть пароль', // gitHub auth
   },
   salt: {
     type: String,
-    required: true,
+    // required: true,  // gitHub auth
   },
+  providers: [{
+    id: String,
+    profile: {},
+  }],
   name: {
     type: String,
     required: 'У пользователя должно быть имя',
     unique: 'Такое имя уже существует'
+  },
+  verifiedEmail: Boolean,
+  verifyEmailToken: {
+    type: String,
+    index: true,
   },
 }, {
   timestamps: true,
@@ -50,10 +59,10 @@ function generatePassword(salt, password) {
   });
 }
 
-userSignUpSchema.methods.setPassword = async function setPassword(password) {
+userSchema.methods.setPassword = async function setPassword(password) {
   if (password !== undefined) {
-    if (password.length < 1) {
-      throw new Error('Пароль должен быть минимум 4 символа.');
+    if (password.length < 4) {
+      throw { name : 'ValidationError', errors : { password: { message: 'Пароль должен быть минимум 4 символа' } } }
     }
   }
 
@@ -61,7 +70,7 @@ userSignUpSchema.methods.setPassword = async function setPassword(password) {
   this.passwordHash = await generatePassword(this.salt, password);
 };
 
-userSignUpSchema.methods.checkPassword = async function(password) {
+userSchema.methods.checkPassword = async function(password) {
   if (!password) return false;
 
   const hash = await generatePassword(this.salt, password);
@@ -70,5 +79,5 @@ userSignUpSchema.methods.checkPassword = async function(password) {
 };
 
 module.exports = {
-  SignUpUser: mongoose.model('SignUpUser', userSignUpSchema),
+  User: mongoose.model('User', userSchema),
 };

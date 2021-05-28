@@ -38,9 +38,12 @@ router
   .get('/login', checkIsAuthenticated, AuthController.renderLogin)
   .get('/registration', AuthController.renderRegistration)
   .get('/get-users', AuthController.getUsers)
+  .get('/confirm/:id', AuthController.confirmEmail)
   .delete('/delete-user/:id', AuthController.delete)
   .post('/registration', AuthController.signUp)
   .post('/login', AuthController.signIn)
+  .get('/login/github', AuthController.githubLogin)
+  .get('/oauth/github', AuthController.signInGithub)
   .post('/logout', AuthController.logout)
 
 app.use(router.routes());
