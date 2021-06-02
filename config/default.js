@@ -1,4 +1,5 @@
 const path = require('path');
+require('dotenv').config()
 
 module.exports = {
   port: 3000,
@@ -13,7 +14,7 @@ module.exports = {
   },
   mongodb: {
     debug: true,
-    uri: 'mongodb://localhost/users_app'
+    uri: process.env.MONGODB_URI,
   },
   server: {
     site: {
@@ -23,8 +24,8 @@ module.exports = {
   },
   providers: {
     github: {
-      appId: '13fc097bf61d636fc48c',
-      appSecret: '6cdb11d767aa95e86a36420ac207165d946aaaff',
+      appId: process.env.GITHUB_APP_ID,
+      appSecret: process.env.GITHUB_APP_SECRET,
       passportOptions: {
         scope: ['user:email']
       }
@@ -33,8 +34,8 @@ module.exports = {
   mailer: {
     transport: 'mailgun',
     mailgun: {
-      apiKey: '***apiKey***',
-      domain: '***domain***'
+      apiKey: process.env.MAILGUN_APIKEY,
+      domain: process.env.MAILGUN_DOMAIN
     },
     senders:  {
       default:  {
