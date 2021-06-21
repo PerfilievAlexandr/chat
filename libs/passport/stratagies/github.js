@@ -21,8 +21,6 @@ module.exports = new GithubStrategy(
 
       if (!user) {
         try {
-          await User.remove();
-
           const newUser = User.create({
             email,
             name: profile.displayName,

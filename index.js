@@ -1,5 +1,8 @@
 const app = require('./app');
+const socket = require('./libs/socket');
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log('App is running on http://localhost:3000');
 });
+
+socket(server);
