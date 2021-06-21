@@ -16,7 +16,7 @@ class UserController {
 
   renderPrivate(ctx) {
     if (ctx.isAuthenticated()) {
-      ctx.body = ctx.render('welcome.pug');
+      ctx.body = ctx.render('chat.pug');
     } else {
       ctx.body = ctx.render('login.pug');
     }
@@ -48,7 +48,6 @@ class UserController {
   async confirmEmail(ctx) {
     const { verifyEmailToken } = ctx.request.params;
     const user = await User.findOne({ verifyEmailToken });
-
 
     if (!user) {
       ctx.throw(404, 'Ссылка подтверждения недействительна или устарела.');

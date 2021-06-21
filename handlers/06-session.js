@@ -1,13 +1,7 @@
-const MongooseStore = require('koa-session-mongoose');
 const session = require('koa-session');
-const mongoose = require('../libs/mongoose');
+const sessionStore = require('../libs/sessionStore');
 
 exports.init = app => app.use(session({
   signed: false,
-
-  store: MongooseStore.create({
-    name: 'Session',
-    expires: 3600 * 4,
-    connection: mongoose
-  })
+  store: sessionStore
 }, app));

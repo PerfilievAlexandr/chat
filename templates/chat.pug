@@ -1,0 +1,25 @@
+extends layout
+
+block append head
+  script(src="/socket.io/socket.io.js")
+  script(src="/script.js")
+
+block content
+  p Welcome, #{user.name}.
+
+  form(action="/logout" method="post")
+    input(type='hidden', name='_csrf', value=csrf)
+    button.btn.btn-primary(type="submit") Logout
+
+  h1 Chat
+
+  #chatForm
+    .alert.alert-info
+      | State:
+      span(data-status)
+
+    .alertBlock
+    .messagesBlock
+    textarea.form-control.messageInput(id="message" name="message" required)
+    button#messageBtn.btn.btn-lg.btn-primary.btn-block(type="button") Send
+
