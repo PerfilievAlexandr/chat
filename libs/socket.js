@@ -1,4 +1,6 @@
+const config = require('config');
 const socketIO = require('socket.io');
+const socketRedis = require('socket.io-redis');
 const cookie = require('cookie');
 
 const sessionStore = require('./sessionStore');
@@ -6,6 +8,8 @@ const { User } = require('../models/User');
 
 const socket = (server) => {
   const io = socketIO(server);
+
+  io.adapter(socketRedis(config.get('redis.uri')))
 
   io.use(async (socket, next) => {
     const sessionId = cookie.parse(socket.request.headers.cookie)['koa.sess'];

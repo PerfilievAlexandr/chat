@@ -16,6 +16,9 @@ module.exports = {
     debug: true,
     uri: process.env.MONGODB_URI,
   },
+  redis: {
+    uri: 'redis://127.0.0.1:6379'
+  },
   server: {
     site: {
       host: 'http://localhost',
